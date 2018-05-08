@@ -21,7 +21,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+        //    gravity: { y: 300 },
             debug: false
         }
     },
@@ -33,6 +33,7 @@ var config = {
 };
 
 var player;
+var ghosts = [];
 var platforms;
 var cursors;
 var score = 0;
@@ -44,7 +45,7 @@ var game = new Phaser.Game(config);
 function preload ()
 {
     this.load.image('background', 'place.png');
-    this.load.image('star', 'doubleking.png');
+    this.load.spritesheet('ghost', 'fr.png', { frameWidth: 221, frameHeight:144 });
     this.load.image('ground', 'ground.png');
     this.load.spritesheet('dude','Joseveloz.png', { frameWidth: 77, frameHeight:152 });
     
@@ -62,7 +63,22 @@ function create ()
     
     
     // The player and its settings
-    player = this.physics.add.sprite(100, 470, 'dude');
+    player = this.physics.add.sprite(200, 470, 'dude');
+    player.body.gravity.y = 100;
+    
+    
+    for (var i = 0; i < 5; i++) {
+      var ghost = this.physics.add.sprite(100, 370, 'ghost');
+      ghost.displayOriginX = 0;
+      ghost.displayOriginY = 0;
+      ghost.displayWidth = 80;
+      ghost.displayHeight = 80;        
+      ghost.x = 700 * Math.random();
+      ghost.y = 500 * Math.random();
+      ghost.body.gravity.y = 0;
+//      
+      ghosts.push(ghost);
+    }
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
@@ -130,6 +146,17 @@ function create ()
 
 function update ()
 {
+    function Die() {
+      alert('Die');    
+      player.alive = false;    
+    }
+    
+    for (var i = 0; i < ghosts.length; ++i) {
+        ghosts[i].x += (Math.random() - 0.5) * 20;
+        ghosts[i].y += (Math.random() - 0.5) * 20;
+        this.physics.add.collider(player, ghosts[i], Die);
+        
+    }
     if (gameOver)
     {
         return;
@@ -160,11 +187,19 @@ function update ()
     }
 }
 
-function collectStar (player, star)
-{
-    star.disableBody(true, true);
-
+function ghoust (index,game,x,y){
+    
+    //this.ghoust=game.add.sprite(x,y,'ghost');
+   // this.ghoust.anchor.setTo(0.5,0.5);
+    //this.ghoust.name=index.ToString();
+    //game.physics.enable(this.ghost,phaser.physics.arcade);
+   // this.ghost.body.immovable=true;
+//    this.ghost.body.collideWorldBounds= true;
+    
+//    this. ghost=game.add.ghost(this.ghost).to
+       
     //  Add and update the score
+    
     score += 10;
     scoreText.setText('Score: ' + score);
 
